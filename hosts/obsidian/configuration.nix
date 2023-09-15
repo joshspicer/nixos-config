@@ -107,11 +107,15 @@ in
       firefox
       bitwarden
       tailscale
-    #  thunderbird
+      signal-desktop
+      qemu
     ];
   };
 
   services.tailscale.enable = true;
+
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "josh" ];
 
   virtualisation.docker.enable = true;
   users.extraGroups.docker.members = [ "josh" ];
@@ -130,8 +134,14 @@ in
     git
     unstable.gh
     vim
-    kdeconnect 
-  #  wget
+    kdeconnect
+    wget
+    evince
+    vlc
+    # Tex
+    python311Packages.pygments
+    texlive.combined.scheme-medium
+    texmaker
   ];
 
   programs.kdeconnect.enable = true;
