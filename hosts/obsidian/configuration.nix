@@ -161,6 +161,9 @@ in
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
+  # https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111
+  networking.firewall.checkReversePath = "loose";
+
   networking.firewall = { 
     enable = true;
     allowedTCPPortRanges = [ 
