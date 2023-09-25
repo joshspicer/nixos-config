@@ -139,6 +139,7 @@ in
     wget
     evince
     vlc
+    dig
     # Tex
     python311Packages.pygments
     texlive.combined.scheme-medium
