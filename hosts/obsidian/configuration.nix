@@ -106,6 +106,7 @@ in
       spotify
       firefox
       bitwarden
+      cura
       tailscale
       signal-desktop
       qemu
