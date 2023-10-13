@@ -6,11 +6,18 @@ let
   unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
 in
 {
+  # Replace with a newer version of tailscaled
+  # https://nixos.org/manual/nixos/unstable/#sec-replace-modules
+  disabledModules = [ "services/networking/tailscale.nix"  ];
+
   imports =
-    [ 
+    [
       <nixos-hardware/framework/13th-gen-intel>
+      <nixos-unstable/nixos/modules/services/networking/tailscale.nix>
       ./hardware-configuration.nix
     ];
+
+  services.tailscale.enable = true;
 
   # Bootloader.
   #boot.loader.systemd-boot.enable = true;
@@ -60,7 +67,7 @@ in
   services.xserver.enable = true;
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
- 
+
   # Configure keymap in X11
   services.xserver = {
     layout = "us";
@@ -98,8 +105,8 @@ in
       # Access devices over serial (ie Arduino/ESP devices)
       "tty"
       "dialout"
-      # Misc 
-      "networkmanager" 
+      # Misc
+      "networkmanager"
       "wheel"
     ];
     packages = with pkgs; [
@@ -107,13 +114,11 @@ in
       firefox
       bitwarden
       cura
-      tailscale
+      unstable.tailscale
       signal-desktop
       qemu
     ];
   };
-
-  services.tailscale.enable = true;
 
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "josh" ];
@@ -130,9 +135,10 @@ in
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [ 
+  environment.systemPackages = with pkgs; [
     unstable.vscode # VS Code is released monthly
     git
+    jq
     unstable.gh
     vim
     kdeconnect
@@ -164,20 +170,20 @@ in
   # https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111
   networking.firewall.checkReversePath = "loose";
 
-  networking.firewall = { 
+  networking.firewall = {
     enable = true;
-    allowedTCPPortRanges = [ 
+    allowedTCPPortRanges = [
       { from = 1714; to = 1764; } # KDE Connect
-    ];  
-    allowedUDPPortRanges = [ 
+    ];
+    allowedUDPPortRanges = [
       { from = 1714; to = 1764; } # KDE Connect
-    ];  
+    ];
   };
 
-#  networking.extraHosts = 
+#  networking.extraHosts =
 #    ''
 #    10.44.0.141 ha.h.spicer.dev
-#    '';  
+#    '';
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
