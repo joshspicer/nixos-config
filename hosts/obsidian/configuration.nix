@@ -137,6 +137,7 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     unstable.vscode # VS Code is released monthly
+    libqalculate
     git
     jq
     unstable.gh
