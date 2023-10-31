@@ -112,11 +112,13 @@ in
     packages = with pkgs; [
       spotify
       firefox
+      thunderbird
       bitwarden
       cura
       unstable.tailscale
       signal-desktop
       qemu
+      rpi-imager
     ];
   };
 
