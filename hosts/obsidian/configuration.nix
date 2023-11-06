@@ -138,12 +138,14 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    unstable.vscode # VS Code is released monthly
+    #unstable.vscode # VS Code is released monthly
+    vscode
     libqalculate
     git
     jq
     unstable.gh
     vim
+    meld # diff GUI tool
     kdeconnect
     wget
     evince
