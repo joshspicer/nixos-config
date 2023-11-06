@@ -17,7 +17,7 @@ in
       ./hardware-configuration.nix
     ];
 
-  services.tailscale.enable = true;
+  #services.tailscale.enable = true;
 
   # Bootloader.
   #boot.loader.systemd-boot.enable = true;
