@@ -80,6 +80,11 @@ in
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  services.printing.drivers = [
+    pkgs.gutenprint
+    pkgs.cnijfilter2
+    pkgs.canon-cups-ufr2
+  ];
 
   # Enable sound with pipewire.
   sound.enable = true;
