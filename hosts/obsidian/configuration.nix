@@ -27,6 +27,10 @@ in
   boot.loader.grub.useOSProber = true;
   boot.loader.grub.efiSupport = true;
 
+#  boot.kernel.sysctl = {
+#    "net.ipv4.ip_unprivileged_port_start" = 53;
+#  };
+
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
@@ -177,11 +181,17 @@ in
 
   networking.firewall = {
     enable = true;
+    #allowedTCPPorts = [ 53 ];
     allowedTCPPortRanges = [
-      { from = 1714; to = 1764; } # KDE Connect
+      { 
+        from = 1714;  to = 1764;  # KDE Connect
+      }
     ];
+    #allowedUDPPorts = [ 53 ];
     allowedUDPPortRanges = [
-      { from = 1714; to = 1764; } # KDE Connect
+      { 
+        from = 1714; to = 1764;  # KDE Connect
+      }
     ];
   };
 
