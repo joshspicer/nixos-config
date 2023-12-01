@@ -124,10 +124,12 @@ in
       thunderbird
       bitwarden
       cura
+      obsidian
       unstable.tailscale
       signal-desktop
       qemu
       rpi-imager
+      docker-compose
     ];
   };
 
@@ -143,6 +145,10 @@ in
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-24.8.6" 
+  ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -160,6 +166,9 @@ in
     evince
     vlc
     dig
+    htop
+    file
+    gparted
     # Tex
     python311Packages.pygments
     texlive.combined.scheme-medium
