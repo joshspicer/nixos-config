@@ -12,7 +12,7 @@ in
 
   imports =
     [
-      <nixos-hardware/framework/13th-gen-intel>
+      <nixos-hardware/framework/13-inch/13th-gen-intel>
       <nixos-unstable/nixos/modules/services/networking/tailscale.nix>
       ./hardware-configuration.nix
     ];
@@ -169,6 +169,12 @@ in
     htop
     file
     gparted
+    gcc
+    chromium
+    # Arduino
+    arduino-cli
+    python3
+    esptool
     # Tex
     python311Packages.pygments
     texlive.combined.scheme-medium
@@ -195,7 +201,7 @@ in
 
   networking.firewall = {
     enable = true;
-    #allowedTCPPorts = [ 53 ];
+    allowedTCPPorts = [ 3000 ];
     allowedTCPPortRanges = [
       { 
         from = 1714;  to = 1764;  # KDE Connect
