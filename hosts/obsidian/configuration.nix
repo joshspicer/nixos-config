@@ -17,7 +17,7 @@ in
       ./hardware-configuration.nix
     ];
 
-  #services.tailscale.enable = true;
+  services.tailscale.enable = true;
 
   # Bootloader.
   #boot.loader.systemd-boot.enable = true;
@@ -26,6 +26,10 @@ in
   boot.loader.grub.devices = ["nodev"];
   boot.loader.grub.useOSProber = true;
   boot.loader.grub.efiSupport = true;
+
+  # Debug these kernel panics
+  boot.crashDump.enable = true;
+  ###kernel.sysctl.sysrq = 1; # NixOS default: 16, https://discourse.nixos.org/t/my-nixos-laptop-often-freezes/6381/11
 
 #  boot.kernel.sysctl = {
 #    "net.ipv4.ip_unprivileged_port_start" = 53;
@@ -147,14 +151,15 @@ in
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.config.permittedInsecurePackages = [
-    "electron-24.8.6" 
+    "electron-24.8.6"
+    "electron-25.9.0" 
   ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    #unstable.vscode # VS Code is released monthly
-    vscode
+    unstable.vscode # VS Code is released monthly
+    #vscode
     libqalculate
     git
     jq
