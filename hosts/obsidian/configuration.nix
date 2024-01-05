@@ -29,11 +29,10 @@ in
 
   # Debug these kernel panics
   boot.crashDump.enable = true;
-  ###kernel.sysctl.sysrq = 1; # NixOS default: 16, https://discourse.nixos.org/t/my-nixos-laptop-often-freezes/6381/11
+  # kernel.sysctl.sysrq = 1; # NixOS default: 16, https://discourse.nixos.org/t/my-nixos-laptop-often-freezes/6381/11
 
-#  boot.kernel.sysctl = {
-#    "net.ipv4.ip_unprivileged_port_start" = 53;
-#  };
+  # iOS USB tethering
+  services.usbmuxd.enable = true;
 
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
@@ -134,6 +133,7 @@ in
       qemu
       rpi-imager
       docker-compose
+      linux-wifi-hotspot
     ];
   };
 
@@ -155,9 +155,14 @@ in
     "electron-25.9.0" 
   ];
 
+  # Keep computer alive when closing laptop lid
+  # Note: In this setup, also need to disable in KDE settings
+  # services.logind.lidSwitch = "ignore";
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    busybox
     unstable.vscode # VS Code is released monthly
     #vscode
     libqalculate
@@ -184,6 +189,8 @@ in
     python311Packages.pygments
     texlive.combined.scheme-medium
     texmaker
+    # iPhone USB tethering
+    libimobiledevice
   ];
 
   programs.kdeconnect.enable = true;
@@ -204,6 +211,12 @@ in
   # https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111
   networking.firewall.checkReversePath = "loose";
 
+
+  # Expose privileged ports with docker, etc...
+  #boot.kernel.sysctl = {
+  #  "net.ipv4.ip_unprivileged_port_start" = 53;
+  #};
+
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [ 3000 ];
@@ -212,7 +225,7 @@ in
         from = 1714;  to = 1764;  # KDE Connect
       }
     ];
-    #allowedUDPPorts = [ 53 ];
+    # allowedUDPPorts = [ 53 19132 ];
     allowedUDPPortRanges = [
       { 
         from = 1714; to = 1764;  # KDE Connect
@@ -222,7 +235,8 @@ in
 
 #  networking.extraHosts =
 #    ''
-#    10.44.0.141 ha.h.spicer.dev
+#    localhost geo.hivebedrock.network
+#    localhost hivebedrock.network
 #    '';
 
   # Open ports in the firewall.
