@@ -4,6 +4,14 @@
 
 let
   unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
+
+  tex = (pkgs.texlive.combine {
+    inherit (pkgs.texlive) scheme-medium
+       titlesec lastpage enumitem wrapfig amsmath ulem hyperref capt-of;
+      #(setq org-latex-compiler "lualatex")
+      #(setq org-preview-latex-default-process 'dvisvgm)
+  });
+
 in
 {
   # Replace with a newer version of tailscaled
@@ -28,7 +36,7 @@ in
   boot.loader.grub.efiSupport = true;
 
   # Debug these kernel panics
-  boot.crashDump.enable = true;
+  # boot.crashDump.enable = true;
   # kernel.sysctl.sysrq = 1; # NixOS default: 16, https://discourse.nixos.org/t/my-nixos-laptop-often-freezes/6381/11
 
   # iOS USB tethering
@@ -181,19 +189,36 @@ in
     gparted
     gcc
     chromium
-    # Arduino
+    # Arduino / Pimoroni
     arduino-cli
     python3
     esptool
+    thonny
     # Tex
     python311Packages.pygments
-    texlive.combined.scheme-medium
+    tex
     texmaker
     # iPhone USB tethering
     libimobiledevice
+    # LibreOffice
+    libreoffice-qt
+    hunspell
+    hunspellDicts.en_US
+    # Math
+    sage
   ];
 
+  environment.variables = {
+    EDITOR = "vim";
+  };
+
   programs.kdeconnect.enable = true;
+
+  nix.gc = {
+    automatic = true;
+    randomizedDelaySec = "14m";
+    options = "--delete-older-than 30d";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -210,7 +235,6 @@ in
 
   # https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111
   networking.firewall.checkReversePath = "loose";
-
 
   # Expose privileged ports with docker, etc...
   #boot.kernel.sysctl = {
