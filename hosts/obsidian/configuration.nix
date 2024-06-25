@@ -1,57 +1,25 @@
-
+# Edit this configuration file to define what should be installed on
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }:
 
-let
-  unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
-
-  tex = (pkgs.texlive.combine {
-    inherit (pkgs.texlive) scheme-medium
-       titlesec lastpage enumitem wrapfig amsmath ulem hyperref capt-of;
-      #(setq org-latex-compiler "lualatex")
-      #(setq org-preview-latex-default-process 'dvisvgm)
-  });
-
-in
 {
-  # Replace with a newer version of tailscaled
-  # https://nixos.org/manual/nixos/unstable/#sec-replace-modules
-  disabledModules = [ "services/networking/tailscale.nix"  ];
-
   imports =
-    [
+    [ # Include the results of the hardware scan.
       <nixos-hardware/framework/13-inch/13th-gen-intel>
-      <nixos-unstable/nixos/modules/services/networking/tailscale.nix>
       ./hardware-configuration.nix
     ];
 
-  services.tailscale.enable = true;
-
   # Bootloader.
-  #boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.devices = ["nodev"];
-  boot.loader.grub.useOSProber = true;
-  boot.loader.grub.efiSupport = true;
-
-  # Debug these kernel panics
-  # boot.crashDump.enable = true;
-  # kernel.sysctl.sysrq = 1; # NixOS default: 16, https://discourse.nixos.org/t/my-nixos-laptop-often-freezes/6381/11
-
-  # iOS USB tethering
-  services.usbmuxd.enable = true;
-
-  hardware.bluetooth.enable = true;
-  services.blueman.enable = true;
-
-  # Setup keyfile
-  boot.initrd.secrets = {
-    "/crypto_keyfile.bin" = null;
-  };
 
   networking.hostName = "obsidian"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  services.tailscale.enable = true;
+  services.usbmuxd.enable = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -79,9 +47,12 @@ in
   };
 
   # Enable the X11 windowing system.
+  # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
+
+  # Enable the KDE Plasma Desktop Environment.
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
 
   # Configure keymap in X11
   services.xserver = {
@@ -98,7 +69,6 @@ in
   ];
 
   # Enable sound with pipewire.
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -125,18 +95,20 @@ in
       # Access devices over serial (ie Arduino/ESP devices)
       "tty"
       "dialout"
-      # Misc
-      "networkmanager"
-      "wheel"
+      # Misc 
+      "networkmanager" 
+      "wheel" 
     ];
     packages = with pkgs; [
+      kdePackages.kate
+      vim
       spotify
       firefox
       thunderbird
       bitwarden
       cura
       obsidian
-      unstable.tailscale
+      tailscale
       signal-desktop
       qemu
       rpi-imager
@@ -147,7 +119,6 @@ in
 
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "josh" ];
-
   virtualisation.docker.enable = true;
   users.extraGroups.docker.members = [ "josh" ];
   virtualisation.docker.rootless = {
@@ -155,28 +126,22 @@ in
     setSocketVariable = true;
   };
 
+  # Install firefox.
+  programs.firefox.enable = true;
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  nixpkgs.config.permittedInsecurePackages = [
-    "electron-24.8.6"
-    "electron-25.9.0" 
-  ];
-
-  # Keep computer alive when closing laptop lid
-  # Note: In this setup, also need to disable in KDE settings
-  # services.logind.lidSwitch = "ignore";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     busybox
-    unstable.vscode # VS Code is released monthly
+    vscode # VS Code is released monthly
     #vscode
     libqalculate
     git
     jq
-    unstable.gh
+    gh
     vim
     meld # diff GUI tool
     kdeconnect
@@ -194,10 +159,6 @@ in
     python3
     esptool
     thonny
-    # Tex
-    python311Packages.pygments
-    tex
-    texmaker
     # iPhone USB tethering
     libimobiledevice
     # LibreOffice
@@ -205,8 +166,8 @@ in
     hunspell
     hunspellDicts.en_US
     # Math
-    sage
-  ];
+    sage  
+];
 
   environment.variables = {
     EDITOR = "vim";
@@ -219,6 +180,7 @@ in
     randomizedDelaySec = "14m";
     options = "--delete-older-than 30d";
   };
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -245,23 +207,18 @@ in
     enable = true;
     allowedTCPPorts = [ 3000 ];
     allowedTCPPortRanges = [
-      { 
+      {
         from = 1714;  to = 1764;  # KDE Connect
       }
     ];
     # allowedUDPPorts = [ 53 19132 ];
     allowedUDPPortRanges = [
-      { 
+      {
         from = 1714; to = 1764;  # KDE Connect
       }
     ];
   };
-
-#  networking.extraHosts =
-#    ''
-#    localhost geo.hivebedrock.network
-#    localhost hivebedrock.network
-#    '';
+ 
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -275,6 +232,6 @@ in
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "23.05"; # Did you read the comment?
+  system.stateVersion = "24.05"; # Did you read the comment?
 
 }
