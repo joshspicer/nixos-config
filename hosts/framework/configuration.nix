@@ -65,6 +65,10 @@
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
+  
+  programs.hyprland.enable = true;
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
@@ -118,11 +122,13 @@
       "plugdev" 
     ];
     packages = with pkgs; [
+      kitty
       kdePackages.kate
       vim
       spotify
       firefox
       thunderbird
+      zoom-us
       bitwarden
       bambu-studio
       obsidian
@@ -136,6 +142,7 @@
       motion
       nodejs_22
       esphome
+      ytcast
     ];
   };
 
@@ -158,15 +165,15 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     busybox
-    vscode-insiders
+    #vscode-insiders
     vscode
     libqalculate
     git
     jq
     gh
     vim
+    realvnc-vnc-viewer
     meld # diff GUI tool
-    kdeconnect
     wget
     evince
     vlc
@@ -194,12 +201,17 @@
     hunspell
     hunspellDicts.en_US
     # Math
-    sage  
+    sage
+    # hyprland WM
+    waybar
+    hyprpaper
+    rofi 
 ];
 
   environment.variables = {
     EDITOR = "vim";
   };
+
 
   programs.kdeconnect.enable = true;
 
