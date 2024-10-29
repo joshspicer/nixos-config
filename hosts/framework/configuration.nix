@@ -35,6 +35,8 @@
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
 
+  hardware.hackrf.enable = true;
+
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -111,7 +113,9 @@
       "dialout"
       # Misc 
       "networkmanager" 
-      "wheel" 
+      "wheel"
+      # HackRf/SDR
+      "plugdev" 
     ];
     packages = with pkgs; [
       kdePackages.kate
@@ -166,6 +170,12 @@
     wget
     evince
     vlc
+    mitmproxy
+    # -- hackrf/SDR --
+    gnuradio
+    gnuradioPackages.osmosdr
+    hackrf
+    # ----------------
     dig
     htop
     file
