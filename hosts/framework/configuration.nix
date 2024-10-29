@@ -5,16 +5,16 @@
 { config, pkgs, ... }:
 
 
-with pkgs;
-let vscode-insiders =
-    (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: rec {
-      src = (builtins.fetchTarball {
-        url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-        sha256 = "sha256:17lxmzv29j3kxpjprbag2l9mxigjpypnkzfbjk7jn7rk11y1avrg";
-      });
-      version = "latest";
-    });
-in
+#with pkgs;
+#let vscode-insiders =
+#    (pkgs.vscode.override { isInsiders = true; }).overrideAttrs (oldAttrs: rec {
+#      src = (builtins.fetchTarball {
+#        url = "https://vscode.download.prss.microsoft.com/dbazure/download/insider/804f450ca900d24db25e7174e8b6dfb3fb2a318c/code-insider-x64-1729606376.tar.gz";
+#        sha256 = "sha256:1g1hqgnmiprz3ca97jxdh74kqlf89hznb40bhi32zkszjd2309v3";
+#      });
+#      version = "latest";
+#    });
+#in
 {
   imports =
     [ # Include the results of the hardware scan.
